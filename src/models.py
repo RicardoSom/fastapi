@@ -49,8 +49,8 @@ class Director(Base):
 
     collections = relationship("Collection", back_populates="director")  
 
-class Contry(Base):
-    __tablename__ = "director"
+class Country(Base):
+    __tablename__ = "country"
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True)
