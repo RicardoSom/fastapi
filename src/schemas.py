@@ -33,7 +33,7 @@ class GenderCreate(GenderBase):
     pass
 
 
-class Gender(UserBase):
+class Gender(GenderBase):
     id: int
     collections: List[Collection] = []
 
