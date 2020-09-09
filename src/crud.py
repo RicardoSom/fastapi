@@ -14,6 +14,12 @@ def delete_gender(db: Session, gender: schemas.Gender):
     db.commit()
     return gender
 
+def update_gender(db: Session, gender: schemas.Gender, update_data: dict):
+    db.query(models.Gender).filter(models.Gender.id == gender.id).update(update_data)
+    db.commit()
+    db.refresh(gender)
+    return gender
+
 def create_gender(db: Session, gender: schemas.GenderCreate):
     db_gender = models.Gender(title=gender.title, description=gender.description)
     db.add(db_gender)

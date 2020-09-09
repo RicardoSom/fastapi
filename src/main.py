@@ -51,6 +51,13 @@ def delete_gender(gender_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Gender not found")
     return crud.delete_gender(db, gender=db_gender)    
 
+@app.put("/genders/{gender_id}", response_model=schemas.Gender)
+def update_gender(gender: schemas.GenderCreate, gender_id: int, db: Session = Depends(get_db)):
+    db_gender = crud.get_gender(db, gender_id=gender_id)
+    if db_gender is None:
+        raise HTTPException(status_code=404, detail="Gender not found")
+    return crud.update_gender(db, gender=db_gender, update_data=gender.dict())    
+
 @app.get("/genders/{gender_id}", response_model=schemas.Gender)
 def read_gender(gender_id: int, db: Session = Depends(get_db)):
     db_gender = crud.get_gender(db, gender_id=gender_id)
