@@ -26,7 +26,7 @@ class Collection(CollectionBase):
 
 class GenderBase(BaseModel):
     title: str
-    description: str
+    description: Optional[str] = None
 
 
 class GenderCreate(GenderBase):
@@ -43,7 +43,7 @@ class Gender(GenderBase):
 
 class CategoryBase(BaseModel):
     title: str
-    description: str
+    description: Optional[str] = None
 
 
 class CategoryCreate(CategoryBase):

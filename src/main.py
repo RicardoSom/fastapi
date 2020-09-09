@@ -1,10 +1,10 @@
 from typing import List
 
-from fastapi import Depends, FastAPI, HTTPException
+from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from starlette.responses import RedirectResponse
-from . import models, schemas
+from . import crud, models, schemas
 from .database import SessionLocal, engine
 
 models.Base.metadata.create_all(bind=engine)
@@ -31,10 +31,29 @@ def get_db():
 
 @app.get("/")
 def main():
-    return RedirectResponse("hola mundo")
+    return {"Api": "World"}
 
 
-# @app.get("/records/", response_model=List[schemas.Record])
-# def show_records(db: Session = Depends(get_db)):
-#     records = db.query(models.Record).all()
-#     return records
+@app.post("/genders/", response_model=schemas.Gender, status_code=status.HTTP_201_CREATED)
+def create_gender(gender: schemas.GenderCreate, db: Session = Depends(get_db)):
+    return crud.create_gender(db=db, gender=gender)
+
+
+@app.get("/genders/", response_model=List[schemas.Gender])
+def read_genders(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    genders = crud.get_genders(db, skip=skip, limit=limit)
+    return genders
+
+@app.delete("/genders/{gender_id}", response_model=schemas.Gender, status_code=202)
+def delete_gender(gender_id: int, db: Session = Depends(get_db)):
+    db_gender = crud.get_gender(db, gender_id=gender_id)
+    if db_gender is None:
+        raise HTTPException(status_code=404, detail="Gender not found")
+    return crud.delete_gender(db, gender=db_gender)    
+
+@app.get("/genders/{gender_id}", response_model=schemas.Gender)
+def read_gender(gender_id: int, db: Session = Depends(get_db)):
+    db_gender = crud.get_gender(db, gender_id=gender_id)
+    if db_gender is None:
+        raise HTTPException(status_code=404, detail="Gender not found")
+    return db_gender
