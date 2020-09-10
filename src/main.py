@@ -1,6 +1,6 @@
 from typing import List
 
-from fastapi import Depends, FastAPI, HTTPException, status
+from fastapi import Depends, FastAPI, HTTPException, status, Response
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from starlette.responses import RedirectResponse
@@ -18,6 +18,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
     allow_credentials=True,
+    expose_headers=["*"]
 )
 
 # Dependency
@@ -113,8 +114,10 @@ def create_director(director: schemas.DirectorCreate, db: Session = Depends(get_
 
 
 @app.get("/directors/", response_model=List[schemas.Director])
-def read_directors(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+def read_directors(skip: int = 0, limit: int = 100, db: Session = Depends(get_db), response: Response = Response):
     directors = crud.get_directors(db, skip=skip, limit=limit)
+    response.headers["Content-Range"] = str(len(directors))
+    # print (len(directors))
     return directors
 
 @app.delete("/directors/{category_id}", response_model=schemas.Director, status_code=202)
