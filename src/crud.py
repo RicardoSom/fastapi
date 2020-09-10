@@ -109,3 +109,30 @@ def create_country(db: Session, country: schemas.CountryCreate):
     db.refresh(db_country)
     return db_country
 
+
+# ------------------------------ Collection --------------------
+
+
+def get_collection(db: Session, collection_id: int):
+    return db.query(models.Collection).filter(models.Collection.id == collection_id).first()
+
+def get_collections(db: Session, skip: int = 0, limit: int = 100):
+    return db.query(models.Collection).offset(skip).limit(limit).all()
+
+def delete_collection(db: Session, collection: schemas.Collection):
+    db.delete(collection)
+    db.commit()
+    return collection
+
+def update_collection(db: Session, collection: schemas.Collection, update_data: dict):
+    db.query(models.Collection).filter(models.Collection.id == collection.id).update(update_data)
+    db.commit()
+    db.refresh(collection)
+    return collection
+
+def create_collection(db: Session, collection: schemas.CollectionCreate):
+    db_collection = models.Collection(**collection.dict())
+    db.add(db_collection)
+    db.commit()
+    db.refresh(db_collection)
+    return db_collection

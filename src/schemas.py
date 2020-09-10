@@ -6,7 +6,11 @@ from pydantic import BaseModel
 
 class CollectionBase(BaseModel):
     title: str
-    release_year: date
+    release_year: Optional[date] = None
+    gender_id : Optional[int] = None
+    category_id : Optional[int] = None
+    director_id : Optional[int] = None
+    country_id : Optional[int] = None
     
 
 class CollectionCreate(CollectionBase):
@@ -15,10 +19,6 @@ class CollectionCreate(CollectionBase):
 
 class Collection(CollectionBase):
     id: int
-    gender_id : int
-    category_id : int
-    director_id : int
-    country_id : int
 
     class Config:
         orm_mode = True

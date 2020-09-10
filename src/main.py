@@ -171,3 +171,37 @@ def read_country(country_id: int, db: Session = Depends(get_db)):
     if db_country is None:
         raise HTTPException(status_code=404, detail="Country not found")
     return db_country
+
+
+# ------------------------------ Collection --------------------
+
+@app.post("/collections/", response_model=schemas.Collection, status_code=status.HTTP_201_CREATED)
+def create_collection(collection: schemas.CollectionCreate, db: Session = Depends(get_db)):
+    return crud.create_collection(db=db, collection=collection)
+
+
+@app.get("/collections/", response_model=List[schemas.Collection])
+def read_collections(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    genders = crud.get_collections(db, skip=skip, limit=limit)
+    return genders
+
+@app.delete("/collections/{category_id}", response_model=schemas.Collection, status_code=202)
+def delete_collection(collection_id: int, db: Session = Depends(get_db)):
+    db_collection = crud.get_collection(db, collection_id=collection_id)
+    if db_collection is None:
+        raise HTTPException(status_code=404, detail="Collection not found")
+    return crud.delete_collection(db, collection=db_collection)    
+
+@app.put("/collections/{collection_id}", response_model=schemas.Collection, status_code=202)
+def update_collection(collection: schemas.CollectionCreate, collection_id: int, db: Session = Depends(get_db)):
+    db_collection = crud.get_collection(db, collection_id=collection_id)
+    if db_collection is None:
+        raise HTTPException(status_code=404, detail="Collection not found")
+    return crud.update_collection(db, collection=db_collection, update_data=collection.dict())    
+
+@app.get("/collections/{collection_id}", response_model=schemas.Collection)
+def read_collection(collection_id: int, db: Session = Depends(get_db)):
+    db_collection = crud.get_collection(db, collection_id=collection_id)
+    if db_collection is None:
+        raise HTTPException(status_code=404, detail="Collection not found")
+    return db_collection
