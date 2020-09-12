@@ -118,15 +118,6 @@ def get_collection(db: Session, collection_id: int):
 
 def get_collections(db: Session, skip: int = 0, limit: int = 100):
     collections = db.query(models.Collection).offset(skip).limit(limit).all()
-    for collection in collections:
-        gender_desc = db.query(models.Gender).filter(models.Gender.id == collection.gender_id).first().title
-        category_desc = db.query(models.Category).filter(models.Category.id == collection.category_id).first().title
-        country_desc = db.query(models.Country).filter(models.Country.id == collection.country_id).first().name
-        director_desc = db.query(models.Director).filter(models.Director.id == collection.director_id).first()
-        collection.gender_desc = gender_desc
-        collection.category_desc = category_desc
-        collection.country_desc = country_desc
-        collection.director_desc = director_desc.name + ' ' + director_desc.last_name
     return collections
 
 def delete_collection(db: Session, collection: schemas.Collection):
@@ -142,6 +133,15 @@ def update_collection(db: Session, collection: schemas.Collection, update_data: 
 
 def create_collection(db: Session, collection: schemas.CollectionCreate):
     db_collection = models.Collection(**collection.dict())
+    print (db_collection)
+    gender_desc = db.query(models.Gender).filter(models.Gender.id == collection.gender_id).first()
+    category_desc = db.query(models.Category).filter(models.Category.id == collection.category_id).first()
+    country_desc = db.query(models.Country).filter(models.Country.id == collection.country_id).first()
+    director_desc = db.query(models.Director).filter(models.Director.id == collection.director_id).first()
+    db_collection.gender_desc = gender_desc.title if gender_desc else None
+    db_collection.category_desc = category_desc.title if category_desc else None
+    db_collection.country_desc = country_desc.name if country_desc else None
+    db_collection.director_desc = (director_desc.name + ' ' + director_desc.last_name) if director_desc else None
     db.add(db_collection)
     db.commit()
     db.refresh(db_collection)

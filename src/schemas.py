@@ -11,6 +11,10 @@ class CollectionBase(BaseModel):
     category_id : Optional[int] = None
     director_id : Optional[int] = None
     country_id : Optional[int] = None
+    gender_desc: Optional[str] = None
+    category_desc: Optional[str] = None
+    director_desc: Optional[str] = None
+    country_desc: Optional[str] = None
     
 
 class CollectionCreate(CollectionBase):
@@ -19,10 +23,7 @@ class CollectionCreate(CollectionBase):
 
 class Collection(CollectionBase):
     id: int
-    gender_desc: Optional[str] = None
-    category_desc: Optional[str] = None
-    director_desc: Optional[str] = None
-    country_desc: Optional[str] = None
+    
     class Config:
         orm_mode = True
 

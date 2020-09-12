@@ -15,6 +15,11 @@ class Collection(Base):
     category_id = Column(Integer, ForeignKey("category.id"))
     director_id = Column(Integer, ForeignKey("director.id"))
     country_id = Column(Integer, ForeignKey("country.id"))
+    gender_desc = Column(String)
+    category_desc = Column(String)
+    director_desc = Column(String)
+    country_desc = Column(String)
+
 
     category = relationship("Category", back_populates="collections")
     gender = relationship("Gender", back_populates="collections")

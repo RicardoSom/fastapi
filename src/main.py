@@ -31,8 +31,8 @@ def get_db():
 
 
 @app.get("/")
-def main():
-    return {"Api": "World"}
+def root_path():
+    return {"Api": "U-zave"}
 
 
 # ------------------------------ Gender --------------------
@@ -122,7 +122,7 @@ def read_directors(skip: int = 0, limit: int = 100, db: Session = Depends(get_db
     # print (len(directors))
     return directors
 
-@app.delete("/directors/{category_id}", response_model=schemas.Director, status_code=202)
+@app.delete("/directors/{director_id}", response_model=schemas.Director, status_code=202)
 def delete_director(director_id: int, db: Session = Depends(get_db)):
     db_director = crud.get_director(db, director_id=director_id)
     if db_director is None:
@@ -192,7 +192,7 @@ def read_collections(skip: int = 0, limit: int = 100, db: Session = Depends(get_
     response.headers["Content-Range"] = str(len(collections))
     return collections
 
-@app.delete("/collections/{category_id}", response_model=schemas.Collection, status_code=202)
+@app.delete("/collections/{collection_id}", response_model=schemas.Collection, status_code=202)
 def delete_collection(collection_id: int, db: Session = Depends(get_db)):
     db_collection = crud.get_collection(db, collection_id=collection_id)
     if db_collection is None:
