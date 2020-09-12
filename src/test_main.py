@@ -46,10 +46,25 @@ def test_create_director():
         "collections": []
     }
 
-
 def test_read_directors():
     response = client.get("/directors/")
     assert response.status_code == 200
+
+
+def test_create_country():
+    response = client.post(
+        "/countries/",
+        json={"name": "Chile", "code": "CL", "region": "América", "capital": "Santiago"},
+    )
+    assert response.status_code == 201
+    assert response.json() == {
+        "name": "Chile",
+        "code": "CL",
+        "region": "América",
+        "capital": "Santiago",
+        "id": response.json().get('id'),
+        "collections": []
+    }    
 
 def test_read_countries():
     response = client.get("/countries/")
