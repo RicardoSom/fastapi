@@ -117,7 +117,17 @@ def get_collection(db: Session, collection_id: int):
     return db.query(models.Collection).filter(models.Collection.id == collection_id).first()
 
 def get_collections(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(models.Collection).offset(skip).limit(limit).all()
+    collections = db.query(models.Collection).offset(skip).limit(limit).all()
+    for collection in collections:
+        gender_desc = db.query(models.Gender).filter(models.Gender.id == collection.gender_id).first().title
+        category_desc = db.query(models.Category).filter(models.Category.id == collection.category_id).first().title
+        country_desc = db.query(models.Country).filter(models.Country.id == collection.country_id).first().name
+        director_desc = db.query(models.Director).filter(models.Director.id == collection.director_id).first()
+        collection.gender_desc = gender_desc
+        collection.category_desc = category_desc
+        collection.country_desc = country_desc
+        collection.director_desc = director_desc.name + ' ' + director_desc.last_name
+    return collections
 
 def delete_collection(db: Session, collection: schemas.Collection):
     db.delete(collection)

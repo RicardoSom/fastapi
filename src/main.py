@@ -43,9 +43,10 @@ def create_gender(gender: schemas.GenderCreate, db: Session = Depends(get_db)):
     return crud.create_gender(db=db, gender=gender)
 
 
-@app.get("/genders/", response_model=List[schemas.Gender])
-def read_genders(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+@app.get("/genders/", response_model=List[schemas.Gender], response_model_exclude={'collections'})
+def read_genders(skip: int = 0, limit: int = 100, db: Session = Depends(get_db), response: Response = Response):
     genders = crud.get_genders(db, skip=skip, limit=limit)
+    response.headers["Content-Range"] = str(len(genders))
     return genders
 
 @app.delete("/genders/{gender_id}", response_model=schemas.Gender, status_code=202)
@@ -78,9 +79,10 @@ def create_category(category: schemas.CategoryCreate, db: Session = Depends(get_
     return crud.create_category(db=db, category=category)
 
 
-@app.get("/categories/", response_model=List[schemas.Gender])
-def read_categories(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+@app.get("/categories/", response_model=List[schemas.Gender], response_model_exclude={'collections'})
+def read_categories(skip: int = 0, limit: int = 100, db: Session = Depends(get_db), response: Response = Response):
     genders = crud.get_categories(db, skip=skip, limit=limit)
+    response.headers["Content-Range"] = str(len(genders))
     return genders
 
 @app.delete("/categories/{category_id}", response_model=schemas.Category, status_code=202)
@@ -113,7 +115,7 @@ def create_director(director: schemas.DirectorCreate, db: Session = Depends(get_
     return crud.create_director(db=db, director=director)
 
 
-@app.get("/directors/", response_model=List[schemas.Director])
+@app.get("/directors/", response_model=List[schemas.Director], response_model_exclude={'collections'})
 def read_directors(skip: int = 0, limit: int = 100, db: Session = Depends(get_db), response: Response = Response):
     directors = crud.get_directors(db, skip=skip, limit=limit)
     response.headers["Content-Range"] = str(len(directors))
@@ -149,10 +151,11 @@ def create_country(country: schemas.CountryCreate, db: Session = Depends(get_db)
     return crud.create_country(db=db, country=country)
 
 
-@app.get("/countries/", response_model=List[schemas.Gender])
-def read_countries(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    genders = crud.get_countries(db, skip=skip, limit=limit)
-    return genders
+@app.get("/countries/", response_model=List[schemas.Country], response_model_exclude={'collections'})
+def read_countries(skip: int = 0, limit: int = 100, db: Session = Depends(get_db), response: Response = Response):
+    countries = crud.get_countries(db, skip=skip, limit=limit)
+    response.headers["Content-Range"] = str(len(countries))
+    return countries
 
 @app.delete("/countries/{category_id}", response_model=schemas.Country, status_code=202)
 def delete_country(country_id: int, db: Session = Depends(get_db)):
@@ -184,9 +187,10 @@ def create_collection(collection: schemas.CollectionCreate, db: Session = Depend
 
 
 @app.get("/collections/", response_model=List[schemas.Collection])
-def read_collections(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    genders = crud.get_collections(db, skip=skip, limit=limit)
-    return genders
+def read_collections(skip: int = 0, limit: int = 100, db: Session = Depends(get_db), response: Response = Response):
+    collections = crud.get_collections(db, skip=skip, limit=limit)
+    response.headers["Content-Range"] = str(len(collections))
+    return collections
 
 @app.delete("/collections/{category_id}", response_model=schemas.Collection, status_code=202)
 def delete_collection(collection_id: int, db: Session = Depends(get_db)):
